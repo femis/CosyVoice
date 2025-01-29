@@ -1,0 +1,41 @@
+# 版本控制
+.git
+.gitmodules
+.gitignore
+
+# 日志文件
+*.log
+
+# 编译文件
+__pycache__
+*.pyc
+*.pyo
+
+# 文档
+*.md
+LICENSE
+FAQ.md
+
+# 测试相关
+test/
+examples/
+
+# 资源文件
+asset/
+output/
+
+# 开发配置
+.vscode/
+.idea/
+*.iml
+
+# 构建产物
+dist/
+build/
+*.egg-info/
+
+
+# Docker相关
+docker/
+Dockerfile
+docker-compose.yaml

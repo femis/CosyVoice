@@ -20,8 +20,12 @@ import torch
 import torchaudio
 import random
 import librosa
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append('{}/third_party/Matcha-TTS'.format(ROOT_DIR))
+matcha_dir = os.path.join(ROOT_DIR, "third_party", "Matcha-TTS")
+sys.path.insert(0, matcha_dir)
+
+
 from cosyvoice.cli.cosyvoice import CosyVoice, CosyVoice2
 from cosyvoice.utils.file_utils import load_wav, logging
 from cosyvoice.utils.common import set_all_random_seed
@@ -171,7 +175,7 @@ def main():
                               outputs=[audio_output])
         mode_checkbox_group.change(fn=change_instruction, inputs=[mode_checkbox_group], outputs=[instruction_text])
     demo.queue(max_size=4, default_concurrency_limit=2)
-    demo.launch(server_name='0.0.0.0', server_port=args.port)
+    demo.launch(server_name='0.0.0.0', server_port=5000)
 
 
 if __name__ == '__main__':
