@@ -188,11 +188,12 @@ def generate():
     logger.debug(f"请求数据: {data}")
     # 从JSON获取参数
     tts_text = data.get("gen_text", "大家好，我是麦克阿瑟上校，听说你们都在引用我的名言。")
-    mode = "3s极速复刻"  # 固定模式
+    language = data.get("language", "") #自然语言控制
+    mode = "自然语言控制" if language else "3s极速复刻"
     sft_dropdown = "default"  # 固定值
     prompt_text = data.get("prompt_text", "大家好，我是麦克阿瑟上校，听说你们都在引用我的名言。")
     prompt_url = data.get("ref_audio_path", "https://vr-static.he29.com/public/case/rabbit/model-maikease.mp3")
-    instruct_text = ""  # 固定值
+    instruct_text = language  # 语言控制
     seed = 0  # 固定值
     stream = False  # 固定值
     speed = data.get("speed_factor", 1.0)
