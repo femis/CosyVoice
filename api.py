@@ -197,8 +197,7 @@ def generate():
     stream = False  # 固定值
     speed = data.get("speed_factor", 1.0)
 
-    logger.info(f"处理参数 - tts_text: {tts_text}, prompt_text: {prompt_text}, "
-               f"prompt_url: {prompt_url}, speed: {speed}")
+    logger.info(f"处理参数 - tts_text: {tts_text}, prompt_text: {prompt_text} prompt_url: {prompt_url}, speed: {speed}")
 
     # 处理音频URL
     prompt_wav_path = None
@@ -220,6 +219,7 @@ def generate():
         logger.info(f"参考文本: {prompt_text}")
         logger.info(f"参考音频: {prompt_wav_path}")
         logger.info(f"------------------------------------------")
+        audio_segments = []  # 用于存储所有音频片段
         for sr, audio_data in generate_audio(
             tts_text=tts_text,
             mode=mode,
@@ -234,8 +234,20 @@ def generate():
             # 使用与webui.py相同的音频处理方式
             audio_data = np.clip(audio_data, -1, 1)  # 限制音频范围
             audio_data = (audio_data * 32767).astype(np.int16)  # 转换为16位PCM格式
-            torchaudio.save(output_file, torch.from_numpy(audio_data).unsqueeze(0), sr, format="mp3")
+            audio_segments.append((sr, audio_data))  # 收集音频片段
+
+        # 合并所有音频片段
+        if audio_segments:
+            combined_sr, combined_audio_data = audio_segments[0]
+            for sr, audio_data in audio_segments[1:]:
+                if sr != combined_sr:
+                    raise ValueError("所有音频片段的采样率必须相同")
+                combined_audio_data = np.concatenate((combined_audio_data, audio_data))
+            torchaudio.save(output_file, torch.from_numpy(combined_audio_data).unsqueeze(0), combined_sr, format="mp3")
             logger.info(f"音频保存成功，路径: {output_file}")
+        else:
+            logger.error("没有生成任何音频片段")
+            raise HTTPException(status_code=500, detail="没有生成任何音频片段")
 
         end_time = time.time()
         logger.info(f"制作请求完成; 耗时：{end_time - start_time}秒")
