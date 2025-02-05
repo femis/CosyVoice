@@ -118,9 +118,6 @@ def generate_audio(tts_text, mode, sft_dropdown, prompt_text, prompt_wav_path, i
         raise ValueError(f"Invalid mode: {mode}")
 
     if mode == '自然语言控制':
-        if cosyvoice.instruct is False:
-            logger.error("当前模型不支持自然语言控制模式")
-            raise HTTPException(status_code=400, detail="当前模型不支持自然语言控制模式")
         if not instruct_text:
             logger.error("缺少instruct文本")
             raise HTTPException(status_code=400, detail="请输入instruct文本")
@@ -168,8 +165,9 @@ def generate_audio(tts_text, mode, sft_dropdown, prompt_text, prompt_wav_path, i
                 yield (cosyvoice.sample_rate, i['tts_speech'].numpy().flatten())
         else:
             logger.info('开始自然语言控制模式推理')
+            prompt_speech_16k = postprocess(load_wav(prompt_wav_path, prompt_sr))
             set_all_random_seed(seed)
-            for i in cosyvoice.inference_instruct(tts_text, sft_dropdown, instruct_text, stream=stream, speed=speed):
+            for i in cosyvoice.inference_instruct2(tts_text, instruct_text, prompt_speech_16k, stream=stream, speed=speed):
                 logger.debug(f"生成音频数据，长度: {len(i['tts_speech'].numpy().flatten())}")
                 yield (cosyvoice.sample_rate, i['tts_speech'].numpy().flatten())
     except Exception as e:
