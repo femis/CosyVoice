@@ -4,6 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: cosy
+    environment:
+      - is_half=True
+      - is_share=True
     ports:
       - "6010:6010"
       - "6011:6011"
@@ -11,7 +14,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '16'
+          cpus: '8'
         reservations:
           devices:
           - driver: nvidia

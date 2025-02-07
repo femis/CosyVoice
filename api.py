@@ -12,7 +12,7 @@ import torchaudio
 import librosa
 from pydub import AudioSegment
 import logging
-
+torch.cuda.set_per_process_memory_fraction(0.5)  # 使用50%的GPU显存
 # 配置日志
 logging.basicConfig(level=logging.INFO,format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
