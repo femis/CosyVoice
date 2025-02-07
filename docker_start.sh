@@ -10,3 +10,6 @@ docker build --progress=plain -t cosyvoice .
 
 # 使用 docker-compose 启动服务
 docker-compose -p voice up
+
+# 编译不启动
+docker build -t voice-cosy .

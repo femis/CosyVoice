@@ -22,8 +22,12 @@ WORKDIR /workspace
 
 COPY requirements.txt /workspace/requirements.txt
 
-# 使用清华大学的镜像源安装依赖到用户目录
-RUN pip install --user -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host=pypi.tuna.tsinghua.edu.cn
+# 安装依赖到集中目录并压缩
+RUN mkdir -p /opt/venv && \
+    pip install --target /opt/venv -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host=pypi.tuna.tsinghua.edu.cn && \
+    cd /opt && \
+    tar -czf venv.tar.gz venv && \
+    rm -rf venv
 
 COPY . .
 
@@ -48,11 +52,11 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && 
 
 WORKDIR /workspace
 
-# 复制已安装的 Python 包和项目文件
-COPY --from=builder /root/.local /root/.local
+# 复制压缩的依赖和项目文件
+COPY --from=builder /opt/venv.tar.gz /opt/
 COPY --from=builder /workspace /workspace
 
-# 将用户目录添加到 PATH
-ENV PATH=/root/.local/bin:$PATH
+EXPOSE 6010 6011
 
-CMD ["python3", "api_run.py"]
+# 修改 CMD 指令以运行 docker_run.sh 脚本
+CMD ["/workspace/docker_run.sh"]

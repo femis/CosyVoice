@@ -1,25 +1,32 @@
 #!/bin/bash
+echo "正在解压环境依赖..."
 
-# 解压之前压缩的文件
+tar -xzf /opt/venv.tar.gz -C /opt
 
-echo "解压之前压缩的文件..."
+sleep 3
 
-#新增判断, 若是已解压, 则跳过, 否则解压和删除
-if [ -d "/root/.local/lib/python3.10" ]; then
-  echo "已解压, 跳过解压"
-else
-  tar -xzf /root/.local/lib/python3.10.tar.gz -C /root/.local/lib/
-  echo "解压完成，删除压缩文件"
-  # 删除压缩文件
-  rm /root/.local/lib/python3.10.tar.gz
-fi
+rm -rf /opt/venv.tar.gz
 
+echo "正在解压完成"
 
-# 等待一秒钟
-sleep 1
+wget http://host.docker.internal:8080/cosy/pretrained_models.zip
+
+echo "正在解压预训练模型..."
+
+tar -xzf pretrained_models.tar.gz
+
+echo "正在解压完成"
+
+sleep 3
+
+echo "正在删除预训练模型压缩包..."
+
+rm -rf pretrained_models.zip
+
+echo
+
+export PYTHONPATH=/opt/venv:$PYTHONPATH
 
 echo "正在启动服务..."
 
 python3 api_run.py
-
-

@@ -39,3 +39,8 @@ build/
 docker/
 Dockerfile
 docker-compose.yaml
+
+
+#模型文件'
+
+pretrained_models/
