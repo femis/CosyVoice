@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "正在解压环境依赖..."
 
-tar -xzf /opt/venv.tar.gz -C /opt
+tar -xzvf /opt/venv.tar.gz -C /opt
 
 sleep 3
 
@@ -9,11 +9,11 @@ rm -rf /opt/venv.tar.gz
 
 echo "正在解压完成"
 
-wget http://host.docker.internal:8080/cosy/pretrained_models.zip
+wget http://host.docker.internal:8080/cosy/pretrained_models.tar.gz
 
 echo "正在解压预训练模型..."
 
-tar -xzf pretrained_models.tar.gz
+tar -xzvf pretrained_models.tar.gz
 
 echo "正在解压完成"
 
