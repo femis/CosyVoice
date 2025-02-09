@@ -9,7 +9,7 @@ docker-compose -p voice up --build --force-recreate -d
 docker build --progress=plain -t cosyvoice .
 
 # 使用 docker-compose 启动服务
-docker-compose -p voice up
+docker-compose -p voice up --force-recreate -d
 
 # 编译不启动
 docker build -t voice-cosy .
