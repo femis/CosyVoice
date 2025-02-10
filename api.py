@@ -192,7 +192,7 @@ def generate():
     prompt_text = data.get("prompt_text", "大家好，我是麦克阿瑟上校，听说你们都在引用我的名言。")
     prompt_url = data.get("ref_audio_path", "https://vr-static.he29.com/public/case/rabbit/model-maikease.mp3")
     instruct_text = language  # 语言控制
-    seed = 0  # 固定值
+    seed = data.get("seed", "0")  # 随机种子
     stream = False  # 固定值
     speed = data.get("speed_factor", 1.0)
 
@@ -217,6 +217,7 @@ def generate():
         logger.info(f"传入文案: {tts_text}")
         logger.info(f"参考文本: {prompt_text}")
         logger.info(f"参考音频: {prompt_wav_path}")
+        logger.info(f"随机种子: {seed}")
         logger.info(f"------------------------------------------")
         audio_segments = []  # 用于存储所有音频片段
         for sr, audio_data in generate_audio(
@@ -226,7 +227,7 @@ def generate():
             prompt_text=prompt_text,
             prompt_wav_path=prompt_wav_path,
             instruct_text=instruct_text,
-            seed=seed,
+            seed=int(seed),
             stream=stream,
             speed=speed
         ):
@@ -253,7 +254,8 @@ def generate():
         return {
             "success": 1,
             "path": output_file,
-            "time": end_time - start_time
+            "time": end_time - start_time,
+            "speed": speed
         }
     except Exception as e:
         logger.error(f"音频生成失败: {str(e)}", exc_info=True)
